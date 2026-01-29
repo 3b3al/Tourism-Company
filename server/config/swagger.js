@@ -62,5 +62,6 @@ const options = {
 };
 
 const swaggerSpec = swaggerJsdoc(options);
+console.log('📖 Swagger base URL:', swaggerSpec.servers[0].url);
 
 module.exports = swaggerSpec;
