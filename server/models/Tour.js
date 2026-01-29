@@ -58,7 +58,8 @@ const tourSchema = new mongoose.Schema({
         default: 'other'
     },
     images: [{
-        type: String
+        type: String,
+        ref: 'File'
     }],
     availableDates: [{
         date: {

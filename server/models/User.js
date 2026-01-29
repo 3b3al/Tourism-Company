@@ -31,11 +31,13 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
+        required: [true, 'Please provide a phone number'],
         trim: true
     },
     avatar: {
         type: String,
-        default: 'default-avatar.png'
+        default: 'default-avatar.png',
+        ref: 'File'
     },
     // Guide-specific fields
     bio: {
