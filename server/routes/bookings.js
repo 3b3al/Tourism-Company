@@ -4,6 +4,7 @@ const validate = require('../middleware/validate');
 const { createBookingDTO, updateBookingStatusDTO } = require('../dtos/booking.dto');
 const { idParamDTO } = require('../dtos/common.dto');
 const {
+    getAllBookings,
     createBooking,
     getMyBookings,
     getBooking,
@@ -38,8 +39,11 @@ const { protect, authorize } = require('../middleware/auth');
  *       201:
  *         description: Booking created
  *       400:
+ *         description: Booking created
+ *       400:
  *         description: Invalid input
  */
+router.get('/', protect, authorize('admin'), getAllBookings);
 router.post('/', protect, authorize('tourist'), validate({ body: createBookingDTO }), createBooking);
 
 /**

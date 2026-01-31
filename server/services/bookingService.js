@@ -166,6 +166,15 @@ class BookingService {
 
         return booking;
     }
+
+    async getAllBookings() {
+        const bookings = await Booking.find()
+            .populate('tour', 'title price')
+            .populate('tourist', 'name email model')
+            .populate('guide', 'name email');
+
+        return bookings;
+    }
 }
 
 module.exports = new BookingService();

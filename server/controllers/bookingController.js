@@ -1,6 +1,25 @@
 const bookingService = require('../services/bookingService');
 const HttpResponse = require('../utils/HttpResponse');
 
+// @desc    Get all bookings (Admin only)
+// @route   GET /api/bookings
+// @access  Private/Admin
+// @desc    Get all bookings (Admin only)
+// @route   GET /api/bookings
+// @access  Private/Admin
+exports.getAllBookings = async (req, res, next) => {
+    try {
+        const bookings = await bookingService.getAllBookings();
+
+        return HttpResponse.success(res, {
+            count: bookings.length,
+            bookings
+        });
+    } catch (error) {
+        return HttpResponse.handleError(res, error);
+    }
+};
+
 // @desc    Create new booking
 // @route   POST /api/bookings
 // @access  Private (Tourist)
