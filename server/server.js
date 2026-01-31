@@ -13,6 +13,11 @@ const swaggerSpec = require('./config/swagger');
 // Middleware
 app.use(cors());
 app.use(morgan('dev'));
+
+// Stripe Webhook (needs raw body before express.json)
+const paymentController = require('./controllers/paymentController');
+app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), paymentController.handleStripeWebhook);
+
 app.use(express.json());
 
 // Swagger Documentation
@@ -40,14 +45,16 @@ const auth = require('./routes/auth');
 const tours = require('./routes/tours');
 const bookings = require('./routes/bookings');
 const files = require('./routes/files');
-const admin = require('./routes/admin'); // New route import
+const admin = require('./routes/admin');
+const payments = require('./routes/payments');
 
 // Mount routers
 app.use('/api/auth', auth);
 app.use('/api/tours', tours);
 app.use('/api/bookings', bookings);
 app.use('/api/files', files);
-app.use('/api/admin', admin); // New route mount
+app.use('/api/admin', admin);
+app.use('/api/payments', payments);
 
 // 404 Handler
 app.use((req, res) => {
