@@ -1,0 +1,54 @@
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-content">
+            <!-- Logo -->
+            <a routerLink="/" class="logo">
+                <span class="logo-icon">🌍</span>
+                <span class="logo-text">TourGuide</span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="nav-links">
+                <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+                <a routerLink="/tours" routerLinkActive="active">Tours</a>
+                <a *ngIf="currentUser && authService.isGuide()" routerLink="/my-tours" routerLinkActive="active">My
+                    Tours</a>
+                <a *ngIf="currentUser" routerLink="/bookings" routerLinkActive="active">My Bookings</a>
+            </div>
+
+            <!-- User Menu -->
+            <div class="nav-actions">
+                <div *ngIf="!currentUser" class="auth-buttons">
+                    <a routerLink="/login" class="btn btn-secondary btn-sm">Login</a>
+                    <a routerLink="/register" class="btn btn-primary btn-sm">Sign Up</a>
+                </div>
+
+                <div *ngIf="currentUser" class="user-menu">
+                    <button class="user-button" (click)="toggleMenu()">
+                        <img [src]="currentUser.avatar || 'assets/default-avatar.png'" alt="User avatar"
+                            class="user-avatar">
+                        <span class="user-name">{{ currentUser.name }}</span>
+                        <span class="dropdown-icon">▼</span>
+                    </button>
+
+                    <div class="dropdown-menu" [class.show]="isMenuOpen">
+                        <a routerLink="/profile" class="dropdown-item" (click)="toggleMenu()">
+                            <span>👤</span> Profile
+                        </a>
+                        <a routerLink="/bookings" class="dropdown-item" (click)="toggleMenu()">
+                            <span>📅</span> My Bookings
+                        </a>
+                        <a *ngIf="authService.isGuide()" routerLink="/my-tours" class="dropdown-item"
+                            (click)="toggleMenu()">
+                            <span>🗺️</span> My Tours
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout" (click)="logout()">
+                            <span>🚪</span> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
