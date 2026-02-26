@@ -1,0 +1,188 @@
+<app-navbar></app-navbar>
+
+<div class="tour-detail-page" *ngIf="!isLoading && tour">
+    <!-- Hero Section -->
+    <div class="tour-hero">
+        <img [src]="tour.images[0] || 'assets/tour-placeholder.jpg'" [alt]="tour.title" class="hero-image">
+        <div class="hero-overlay">
+            <div class="container">
+                <span class="tour-category">{{ tour.category | titlecase }}</span>
+                <h1 class="tour-title">{{ tour.title }}</h1>
+                <div class="tour-quick-info">
+                    <span>⏱️ {{ tour.duration }} hours</span>
+                    <span>👥 Max {{ tour.maxGroupSize }} people</span>
+                    <span>📍 {{ tour.locations.length }} locations</span>
+                    <span class="difficulty-badge" [class]="tour.difficulty">{{ tour.difficulty | titlecase }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tour-content-grid">
+            <!-- Main Content -->
+            <div class="tour-main">
+                <!-- Description -->
+                <section class="content-section card">
+                    <h2>About This Tour</h2>
+                    <p>{{ tour.description }}</p>
+                </section>
+
+                <!-- Locations -->
+                <section class="content-section card">
+                    <h2>Tour Locations</h2>
+                    <div class="locations-list">
+                        <div *ngFor="let location of tour.locations" class="location-item">
+                            <div class="location-number">{{ location.order || 1 }}</div>
+                            <div class="location-info">
+                                <h4>{{ location.name }}</h4>
+                                <p *ngIf="location.description">{{ location.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Included/Excluded -->
+                <section class="content-section card">
+                    <div class="included-grid">
+                        <div *ngIf="tour.included && tour.included.length > 0">
+                            <h3>✅ What's Included</h3>
+                            <ul>
+                                <li *ngFor="let item of tour.included">{{ item }}</li>
+                            </ul>
+                        </div>
+                        <div *ngIf="tour.excluded && tour.excluded.length > 0">
+                            <h3>❌ What's Not Included</h3>
+                            <ul>
+                                <li *ngFor="let item of tour.excluded">{{ item }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Guide Info -->
+                <section class="content-section card" *ngIf="tour.guide">
+                    <h2>Your Guide</h2>
+                    <div class="guide-card">
+                        <img [src]="tour.guide.avatar || 'assets/default-avatar.png'" alt="Guide" class="guide-avatar">
+                        <div class="guide-info">
+                            <h3>{{ tour.guide.name }}</h3>
+                            <p *ngIf="tour.guide.bio">{{ tour.guide.bio }}</p>
+                            <div class="guide-meta">
+                                <span *ngIf="tour.guide.rating">⭐ {{ tour.guide.rating }} Rating</span>
+                                <span *ngIf="tour.guide.languages">🗣️ {{ tour.guide.languages.join(', ') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="tour-sidebar">
+                <!-- Price Card -->
+                <div class="price-card card">
+                    <div class="price-header">
+                        <span class="price-label">From</span>
+                        <span class="price-amount">${{ tour.price }}</span>
+                        <span class="price-per">per person</span>
+                    </div>
+
+                    <button class="btn btn-accent btn-lg" (click)="toggleBookingForm()" style="width: 100%;">
+                        {{ showBookingForm ? 'Hide Booking Form' : 'Book This Tour' }}
+                    </button>
+
+                    <!-- Booking Form -->
+                    <div class="booking-form" *ngIf="showBookingForm">
+                        <div class="success-message" *ngIf="bookingSuccess">
+                            ✅ Booking successful! Redirecting to your bookings...
+                        </div>
+
+                        <form [formGroup]="bookingForm" (ngSubmit)="onSubmitBooking()" *ngIf="!bookingSuccess">
+                            <div class="form-group">
+                                <label>Select Date</label>
+                                <input type="date" formControlName="selectedDate" class="form-control" [min]="minDate">
+                                <small
+                                    *ngIf="bookingForm.get('selectedDate')?.errors?.['required'] && bookingForm.get('selectedDate')?.touched"
+                                    class="text-danger">
+                                    Please select a date.
+                                </small>
+                                <small *ngIf="isDateInvalid()" class="text-danger">
+                                    No tours available on this date. Please choose another date.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Select Time</label>
+                                <select formControlName="selectedTime">
+                                    <option value="">Choose a time</option>
+                                    <option *ngFor="let time of getTimesForDate()" [value]="time">
+                                        {{ time }}
+                                    </option>
+                                </select>
+                                <small
+                                    *ngIf="bookingForm.get('selectedTime')?.errors?.['required'] && bookingForm.get('selectedTime')?.touched"
+                                    class="text-danger">
+                                    Please select a time.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Number of People</label>
+                                <input type="number" formControlName="numberOfPeople" min="1" [max]="tour.maxGroupSize">
+                                <small
+                                    *ngIf="bookingForm.get('numberOfPeople')?.errors?.['required'] && bookingForm.get('numberOfPeople')?.touched"
+                                    class="text-danger">
+                                    Please select a number of people.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Contact Phone</label>
+                                <input type="tel" formControlName="contactPhone" placeholder="+1234567890">
+                                <small
+                                    *ngIf="bookingForm.get('contactPhone')?.errors?.['required'] && bookingForm.get('contactPhone')?.touched"
+                                    class="text-danger">
+                                    Please enter a phone number.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Contact Email</label>
+                                <input type="email" formControlName="contactEmail" placeholder="your@email.com">
+                                <small
+                                    *ngIf="bookingForm.get('contactEmail')?.errors?.['required'] && bookingForm.get('contactEmail')?.touched"
+                                    class="text-danger">
+                                    Please enter an email address.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Special Requests (Optional)</label>
+                                <textarea formControlName="specialRequests" rows="3"
+                                    placeholder="Any special requirements?"></textarea>
+                            </div>
+
+                            <div class="total-price">
+                                <span>Total:</span>
+                                <span class="total-amount">${{ calculateTotal() }}</span>
+                            </div>
+
+                            <div class="error-alert" *ngIf="bookingError">
+                                {{ bookingError }}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                                {{ isSubmitting ? 'Processing...' : 'Confirm Booking' }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading-container" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading tour details...</p>
+</div>

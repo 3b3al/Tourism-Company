@@ -1,0 +1,262 @@
+.tour-hero {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: white;
+    padding: var(--spacing-3xl) 0;
+}
+
+.tour-category {
+    display: inline-block;
+    background: var(--accent-orange);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-md);
+}
+
+.tour-title {
+    font-size: var(--font-size-5xl);
+    margin-bottom: var(--spacing-lg);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.tour-quick-info {
+    display: flex;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+    font-size: var(--font-size-lg);
+}
+
+.tour-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: var(--spacing-2xl);
+    margin: var(--spacing-3xl) 0;
+}
+
+.content-section {
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.content-section h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-lg);
+    color: var(--gray-900);
+}
+
+.locations-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.location-item {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+}
+
+.location-number {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.location-info h4 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--gray-900);
+}
+
+.location-info p {
+    color: var(--gray-600);
+    margin: 0;
+}
+
+.included-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+}
+
+.included-grid h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.included-grid ul {
+    list-style: none;
+    padding: 0;
+}
+
+.included-grid li {
+    padding: var(--spacing-sm) 0;
+    color: var(--gray-700);
+}
+
+.guide-card {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: start;
+}
+
+.guide-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.guide-info h3 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.guide-meta {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    color: var(--gray-600);
+}
+
+.price-card {
+    padding: var(--spacing-2xl);
+    position: sticky;
+    top: var(--spacing-xl);
+}
+
+.price-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.price-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-sm);
+}
+
+.price-amount {
+    display: block;
+    font-size: var(--font-size-5xl);
+    font-weight: 800;
+    color: var(--primary-700);
+    margin-bottom: var(--spacing-sm);
+}
+
+.price-per {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+}
+
+.booking-form {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-xl);
+    border-top: 2px solid var(--gray-200);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: var(--font-size-sm);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+}
+
+.total-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+}
+
+.total-amount {
+    font-size: var(--font-size-2xl);
+    color: var(--primary-700);
+}
+
+.success-message {
+    background: #e8f5e9;
+    color: var(--success);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 600;
+}
+
+.error-alert {
+    background: #ffebee;
+    color: var(--error);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    border-left: 4px solid var(--error);
+    font-size: var(--font-size-sm);
+}
+
+.text-danger {
+    color: var(--error);
+}
+
+@media (max-width: 1024px) {
+    .tour-content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .price-card {
+        position: static;
+    }
+
+    .included-grid {
+        grid-template-columns: 1fr;
+    }
+}

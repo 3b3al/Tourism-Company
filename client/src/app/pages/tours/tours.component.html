@@ -1,0 +1,96 @@
+<app-navbar></app-navbar>
+
+<div class="tours-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>Explore Tours</h1>
+            <p>Find your perfect adventure from our curated collection</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section card">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" [(ngModel)]="filters.search" (ngModelChange)="onFilterChange()"
+                        placeholder="Search tours...">
+                </div>
+
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select [(ngModel)]="filters.category" (ngModelChange)="onFilterChange()">
+                        <option value="">All Categories</option>
+                        <option *ngFor="let cat of categories" [value]="cat">{{ cat | titlecase }}</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Difficulty</label>
+                    <select [(ngModel)]="filters.difficulty" (ngModelChange)="onFilterChange()">
+                        <option value="">All Levels</option>
+                        <option *ngFor="let diff of difficulties" [value]="diff">{{ diff | titlecase }}</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Min Price</label>
+                    <input type="number" [(ngModel)]="filters.minPrice" (ngModelChange)="onFilterChange()"
+                        placeholder="$0">
+                </div>
+
+                <div class="filter-group">
+                    <label>Max Price</label>
+                    <input type="number" [(ngModel)]="filters.maxPrice" (ngModelChange)="onFilterChange()"
+                        placeholder="$1000">
+                </div>
+
+                <div class="filter-group">
+                    <button class="btn btn-secondary" (click)="clearFilters()">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-container">
+            <div class="spinner"></div>
+            <p>Loading tours...</p>
+        </div>
+
+        <!-- Tours Grid -->
+        <div *ngIf="!isLoading && tours.length > 0" class="tours-grid grid grid-3">
+            <div *ngFor="let tour of tours" class="tour-card card">
+                <div class="tour-image">
+                    <img [src]="tour.images[0] || 'assets/tour-placeholder.jpg'" [alt]="tour.title">
+                    <span class="tour-badge">{{ tour.category }}</span>
+                    <span class="difficulty-badge" [class]="tour.difficulty">{{ tour.difficulty }}</span>
+                </div>
+                <div class="tour-content">
+                    <h3 class="tour-title">{{ tour.title }}</h3>
+                    <p class="tour-description">{{ tour.description | slice:0:120 }}...</p>
+
+                    <div class="tour-meta">
+                        <span class="meta-item">⏱️ {{ tour.duration }}h</span>
+                        <span class="meta-item">👥 Max {{ tour.maxGroupSize }}</span>
+                        <span class="meta-item">⭐ {{ tour.rating || 'New' }}</span>
+                    </div>
+
+                    <div class="tour-footer">
+                        <div class="tour-price">
+                            <span class="price-label">From</span>
+                            <span class="price-amount">${{ tour.price }}</span>
+                        </div>
+                        <a [routerLink]="['/tours', tour._id]" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && tours.length === 0" class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>No tours found</h3>
+            <p>Try adjusting your filters or search criteria</p>
+            <button class="btn btn-primary" (click)="clearFilters()">Clear Filters</button>
+        </div>
+    </div>
+</div>
