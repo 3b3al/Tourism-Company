@@ -1,0 +1,83 @@
+<div class="invoice-container">
+    <div class="invoice-card" *ngIf="!isLoading && booking">
+        <div class="success-badge">
+            <span class="check-icon">✓</span>
+            <h2>Payment Successful!</h2>
+            <p>Your booking is now confirmed.</p>
+        </div>
+
+        <div class="invoice-header">
+            <div class="company-info">
+                <h1>ANTIGRAVITY TRAVEL</h1>
+                <p>Explore the world with us</p>
+            </div>
+            <div class="invoice-meta">
+                <p><strong>Invoice #:</strong> INV-{{ booking._id?.substring(0, 8).toUpperCase() }}</p>
+                <p><strong>Date:</strong> {{ booking.createdAt | date }}</p>
+                <p><strong>Status:</strong> <span class="status-paid">PAID</span></p>
+            </div>
+        </div>
+
+        <div class="invoice-body">
+            <div class="section">
+                <h3>Customer Details</h3>
+                <p><strong>Name:</strong> {{ booking.tourist.name }}</p>
+                <p><strong>Email:</strong> {{ booking.tourist.email }}</p>
+                <p><strong>Phone:</strong> {{ booking.contactPhone }}</p>
+            </div>
+
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Tour Description</th>
+                        <th>Date & Time</th>
+                        <th>Guests</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ booking.tour.title }}</td>
+                        <td>{{ booking.selectedDate | date }} at {{ booking.selectedTime }}</td>
+                        <td>{{ booking.numberOfPeople }}</td>
+                        <td>{{ booking.tour.price | currency }}</td>
+                        <td>{{ booking.totalPrice | currency }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="invoice-footer">
+                <div class="notes">
+                    <h4>Important Note:</h4>
+                    <p>Please arrive at the meeting point 15 minutes before the scheduled time. Bring a digital or
+                        printed copy of this invoice.</p>
+                </div>
+                <div class="grand-total">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span>{{ booking.totalPrice | currency }}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax (0%):</span>
+                        <span>$0.00</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>Grand Total:</span>
+                        <span>{{ booking.totalPrice | currency }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions no-print">
+            <button class="btn btn-secondary" (click)="printInvoice()">Download/Print PDF</button>
+            <button class="btn btn-primary" routerLink="/bookings">View My Bookings</button>
+        </div>
+    </div>
+
+    <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Generating your invoice...</p>
+    </div>
+</div>

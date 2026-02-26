@@ -1,0 +1,62 @@
+<div class="payment-container">
+    <div class="payment-card" *ngIf="!isLoading && booking">
+        <header class="payment-header">
+            <h1>Complete Your Booking</h1>
+            <p class="subtitle">Select your preferred payment method to finalize your adventure.</p>
+        </header>
+
+        <div class="booking-summary">
+            <div class="summary-item">
+                <span class="label">Tour</span>
+                <span class="value">{{ booking.tour.title }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Date & Time</span>
+                <span class="value">{{ booking.selectedDate | date:'longDate' }} at {{ booking.selectedTime }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Guests</span>
+                <span class="value">{{ booking.numberOfPeople }} Person(s)</span>
+            </div>
+            <div class="total-section">
+                <span class="label">Total Amount</span>
+                <span class="amount">{{ booking.totalPrice | currency }}</span>
+            </div>
+        </div>
+
+        <div class="payment-methods">
+            <h3>Payment Methods</h3>
+            <div class="methods-grid">
+                <div *ngFor="let method of paymentMethods" class="method-card" [class.disabled]="isProcessing"
+                    (click)="selectPaymentMethod(method.id)">
+                    <div class="method-icon" [ngSwitch]="method.id">
+                        <i *ngSwitchCase="'stripe'" class="payment-icon stripe-icon">💳</i>
+                        <i *ngSwitchCase="'bankTransfer'" class="payment-icon bank-icon">🏦</i>
+                        <i *ngSwitchCase="'paypal'" class="payment-icon paypal-icon">🅿️</i>
+                    </div>
+                    <div class="method-info">
+                        <span class="method-name">{{ method.name }}</span>
+                        <span class="method-desc" *ngIf="method.id === 'stripe'">Secure Credit/Debit Card Payment</span>
+                        <span class="method-desc" *ngIf="method.id === 'bankTransfer'">Manual Transfer
+                            Instructions</span>
+                    </div>
+                    <div class="selection-arrow">→</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-message" *ngIf="error">
+            {{ error }}
+        </div>
+
+        <div class="loading-overlay" *ngIf="isProcessing">
+            <div class="spinner"></div>
+            <p>Redirecting to secure gateway...</p>
+        </div>
+    </div>
+
+    <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Gearing up for your journey...</p>
+    </div>
+</div>
