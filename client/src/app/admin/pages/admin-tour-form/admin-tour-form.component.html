@@ -1,0 +1,96 @@
+<div class="page-header">
+    <h1>{{ isEditMode ? 'Edit Tour' : 'Create Tour' }}</h1>
+    <a routerLink="/admin/tours" class="btn btn-secondary">Back to List</a>
+</div>
+
+<div class="form-container">
+    <form [formGroup]="tourForm" (ngSubmit)="onSubmit()">
+
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" formControlName="title" class="form-control"
+                [class.is-invalid]="submitted && tourForm.get('title')?.errors">
+            <div class="invalid-feedback" *ngIf="submitted && tourForm.get('title')?.errors?.['required']">Title is
+                required</div>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea formControlName="description" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col">
+                <label>Price</label>
+                <input type="number" formControlName="price" class="form-control">
+            </div>
+            <div class="form-group col">
+                <label>Duration (hours)</label>
+                <input type="number" formControlName="duration" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col">
+                <label>Category</label>
+                <select formControlName="category" class="form-control">
+                    <option value="cultural">Cultural</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="nature">Nature</option>
+                    <option value="food">Food</option>
+                    <option value="historical">Historical</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group col">
+                <label>Difficulty</label>
+                <select formControlName="difficulty" class="form-control">
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="difficult">Difficult</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Max Group Size</label>
+            <input type="number" formControlName="maxGroupSize" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>Guide</label>
+            <select formControlName="guide" class="form-control">
+                <option value="">Select a guide</option>
+                <option *ngFor="let guide of guides" [value]="guide._id">{{ guide.name }} ({{ guide.email }})</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Included (comma separated)</label>
+            <input type="text" formControlName="included" class="form-control" placeholder="Lunch, Entrance fees, etc.">
+        </div>
+
+        <div class="form-group">
+            <label>Excluded (comma separated)</label>
+            <input type="text" formControlName="excluded" class="form-control"
+                placeholder="Tips, Personal expenses, etc.">
+        </div>
+
+        <div class="form-group">
+            <label>Requirements (comma separated)</label>
+            <input type="text" formControlName="requirements" class="form-control"
+                placeholder="Comfortable shoes, Sunscreen, etc.">
+        </div>
+
+        <div class="form-group" *ngIf="!isEditMode">
+            <label>Images</label>
+            <input type="file" (change)="onFileSelected($event)" multiple class="form-control">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+                {{ loading ? 'Saving...' : (isEditMode ? 'Update Tour' : 'Create Tour') }}
+            </button>
+        </div>
+    </form>
+</div>

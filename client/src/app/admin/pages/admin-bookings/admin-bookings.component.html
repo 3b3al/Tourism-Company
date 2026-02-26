@@ -1,0 +1,45 @@
+<div class="page-header">
+    <h1>Manage Bookings</h1>
+</div>
+
+<div *ngIf="loading" class="loading">Loading bookings...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<div class="table-container" *ngIf="!loading && !error">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Tour</th>
+                <th>Tourist</th>
+                <th>Guide</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let booking of bookings">
+                <td>{{ booking.selectedDate | date:'mediumDate' }}</td>
+                <td>{{ booking.tour?.title }}</td>
+                <td>{{ booking.tourist?.name }} <small>({{ booking.tourist?.email }})</small></td>
+                <td>{{ booking.guide?.name }}</td>
+                <td>{{ booking.totalPrice | currency }}</td>
+                <td>
+                    <span class="badge" [ngClass]="'status-' + booking.status">{{ booking.status }}</span>
+                </td>
+                <td>{{ booking.paymentStatus }}</td>
+                <td class="actions">
+                    <button *ngIf="booking.status === 'pending'" (click)="updateStatus(booking._id!, 'confirmed')"
+                        class="btn btn-sm btn-success">Confirm</button>
+                    <button *ngIf="booking.status !== 'cancelled' && booking.status !== 'completed'"
+                        (click)="updateStatus(booking._id!, 'cancelled')" class="btn btn-sm btn-danger">Cancel</button>
+                </td>
+            </tr>
+            <tr *ngIf="bookings.length === 0">
+                <td colspan="8" class="text-center">No bookings found.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

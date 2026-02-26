@@ -1,0 +1,87 @@
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    margin-right: 5px;
+}
+
+.btn-info {
+    background-color: #f1c40f;
+    color: #2c3e50;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.data-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.tour-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.actions {
+    display: flex;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+}
+
+.error {
+    color: #e74c3c;
+}

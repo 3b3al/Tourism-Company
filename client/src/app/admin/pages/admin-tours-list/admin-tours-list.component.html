@@ -1,0 +1,41 @@
+<div class="page-header">
+    <h1>Manage Tours</h1>
+    <a routerLink="/admin/tours/new" class="btn btn-primary">Create New Tour</a>
+</div>
+
+<div *ngIf="loading" class="loading">Loading tours...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<div class="table-container" *ngIf="!loading && !error">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Duration</th>
+                <th>Guide</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tour of tours">
+                <td>
+                    <img [src]="tour.images[0]" alt="{{ tour.title }}" class="tour-thumb"
+                        *ngIf="tour.images && tour.images.length > 0">
+                </td>
+                <td>{{ tour.title }}</td>
+                <td>{{ tour.price | currency }}</td>
+                <td>{{ tour.duration }} hours</td>
+                <td>{{ tour.guide?.name || 'N/A' }}</td>
+                <td class="actions">
+                    <a [routerLink]="['/admin/tours', tour._id]" class="btn btn-sm btn-info">Edit</a>
+                    <button (click)="deleteTour(tour._id!)" class="btn btn-sm btn-danger">Delete</button>
+                </td>
+            </tr>
+            <tr *ngIf="tours.length === 0">
+                <td colspan="6" class="text-center">No tours found.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
