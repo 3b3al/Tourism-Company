@@ -1,0 +1,90 @@
+<app-navbar></app-navbar>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+        <h1 class="hero-title fade-in">Discover Your Next Adventure</h1>
+        <p class="hero-subtitle fade-in">Book amazing tours with expert local guides around the world</p>
+
+        <div class="search-box fade-in">
+            <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+                placeholder="Where do you want to go?" class="search-input">
+            <button (click)="onSearch()" class="btn btn-accent btn-lg">
+                🔍 Search Tours
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+<section class="categories-section">
+    <div class="container">
+        <h2 class="section-title text-center">Explore by Category</h2>
+        <div class="categories-grid">
+            <div *ngFor="let category of categories" class="category-card" (click)="onCategoryClick(category.value)">
+                <span class="category-icon">{{ category.icon }}</span>
+                <h3 class="category-name">{{ category.name }}</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Tours -->
+<section class="featured-section">
+    <div class="container">
+        <h2 class="section-title text-center">Featured Tours</h2>
+        <p class="section-subtitle text-center">Handpicked experiences from our best guides</p>
+
+        <div *ngIf="isLoading" class="loading-container">
+            <div class="spinner"></div>
+            <p>Loading amazing tours...</p>
+        </div>
+
+        <div *ngIf="!isLoading" class="tours-grid grid grid-3">
+            <div *ngFor="let tour of featuredTours" class="tour-card card">
+                <div class="tour-image">
+                    <img [src]="tour.images[0] || 'assets/tour-placeholder.jpg'" [alt]="tour.title">
+                    <span class="tour-badge">{{ tour.category }}</span>
+                </div>
+                <div class="tour-content">
+                    <h3 class="tour-title">{{ tour.title }}</h3>
+                    <p class="tour-description">{{ tour.description | slice:0:100 }}...</p>
+
+                    <div class="tour-meta">
+                        <span class="meta-item">
+                            ⏱️ {{ tour.duration }}h
+                        </span>
+                        <span class="meta-item">
+                            👥 Max {{ tour.maxGroupSize }}
+                        </span>
+                        <span class="meta-item">
+                            ⭐ {{ tour.rating || 'New' }}
+                        </span>
+                    </div>
+
+                    <div class="tour-footer">
+                        <div class="tour-price">
+                            <span class="price-label">From</span>
+                            <span class="price-amount">${{ tour.price }}</span>
+                        </div>
+                        <a [routerLink]="['/tours', tour._id]" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a routerLink="/tours" class="btn btn-secondary btn-lg">View All Tours</a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container text-center">
+        <h2 class="cta-title">Are you a tour guide?</h2>
+        <p class="cta-subtitle">Join our platform and share your expertise with travelers worldwide</p>
+        <a routerLink="/register" class="btn btn-accent btn-lg">Become a Guide</a>
+    </div>
+</section>
