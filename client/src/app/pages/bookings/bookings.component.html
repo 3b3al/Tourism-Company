@@ -1,0 +1,94 @@
+<app-navbar></app-navbar>
+
+<div class="bookings-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>My Bookings</h1>
+            <p>Manage your tour reservations</p>
+        </div>
+
+        <div *ngIf="isLoading" class="loading-container">
+            <div class="spinner"></div>
+            <p>Loading your bookings...</p>
+        </div>
+
+        <div *ngIf="!isLoading && bookings.length === 0" class="empty-state">
+            <div class="empty-icon">📅</div>
+            <h3>No bookings yet</h3>
+            <p>Start exploring and book your first tour!</p>
+            <a routerLink="/tours" class="btn btn-primary btn-lg">Browse Tours</a>
+        </div>
+
+        <div *ngIf="!isLoading && bookings.length > 0" class="bookings-grid">
+            <div *ngFor="let booking of bookings" class="booking-card card">
+                <div class="booking-header">
+                    <div class="tour-image">
+                        <img [src]="booking.tour?.images?.[0] || 'assets/tour-placeholder.jpg'"
+                            [alt]="booking.tour?.title">
+                    </div>
+                    <div class="booking-title-section">
+                        <h3>{{ booking.tour?.title }}</h3>
+                        <span class="booking-status" [ngClass]="getStatusClass(booking.status)">
+                            {{ booking.status | titlecase }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="booking-details">
+                    <div class="detail-row">
+                        <span class="detail-label">📅 Date:</span>
+                        <span class="detail-value">{{ booking.selectedDate | date:'fullDate' }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">🕐 Time:</span>
+                        <span class="detail-value">{{ booking.selectedTime }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">👥 People:</span>
+                        <span class="detail-value">{{ booking.numberOfPeople }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">💰 Total:</span>
+                        <span class="detail-value price">${{ booking.totalPrice }}</span>
+                    </div>
+
+                    <div class="detail-row" *ngIf="authService.isGuide()">
+                        <span class="detail-label">👤 Tourist:</span>
+                        <span class="detail-value">{{ booking.tourist?.name }}</span>
+                    </div>
+
+                    <div class="detail-row" *ngIf="!authService.isGuide()">
+                        <span class="detail-label">🗺️ Guide:</span>
+                        <span class="detail-value">{{ booking.guide?.name }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">📞 Phone:</span>
+                        <span class="detail-value">{{ booking.contactPhone }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">💳 Payment:</span>
+                        <span class="detail-value">{{ booking.paymentStatus | titlecase }}</span>
+                    </div>
+
+                    <div class="detail-row" *ngIf="booking.specialRequests">
+                        <span class="detail-label">📝 Special Requests:</span>
+                        <span class="detail-value">{{ booking.specialRequests }}</span>
+                    </div>
+                </div>
+
+                <div class="booking-actions">
+                    <button *ngIf="canCancel(booking)" class="btn btn-secondary" (click)="cancelBooking(booking._id!)"
+                        [disabled]="cancellingId === booking._id">
+                        {{ cancellingId === booking._id ? 'Cancelling...' : 'Cancel Booking' }}
+                    </button>
+                    <a [routerLink]="['/tours', booking.tour?._id]" class="btn btn-primary">View Tour</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
