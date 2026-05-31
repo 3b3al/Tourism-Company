@@ -12,7 +12,7 @@
                 <p>Explore the world with us</p>
             </div>
             <div class="invoice-meta">
-                <p><strong>Invoice #:</strong> INV-{{ booking._id?.substring(0, 8).toUpperCase() }}</p>
+                <p><strong>Invoice #:</strong> INV-{{ (booking._id || '').substring(0, 8).toUpperCase() }}</p>
                 <p><strong>Date:</strong> {{ booking.createdAt | date }}</p>
                 <p><strong>Status:</strong> <span class="status-paid">PAID</span></p>
             </div>

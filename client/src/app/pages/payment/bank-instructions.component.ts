@@ -16,7 +16,7 @@ import { Booking } from '../../models/booking.model';
                 <div class="summary">
                     <p><strong>Tour:</strong> {{ booking.tour.title }}</p>
                     <p><strong>Total Amount:</strong> {{ booking.totalPrice | currency }}</p>
-                    <p><strong>Reference Number:</strong> {{ booking._id?.substring(0,8).toUpperCase() }}</p>
+                    <p><strong>Reference Number:</strong> {{ (booking._id || '').substring(0, 8).toUpperCase() }}</p>
                 </div>
 
                 <div class="bank-details">
