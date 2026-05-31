@@ -61,7 +61,7 @@ exports.getMe = async (req, res) => {
     try {
         const user = await authService.getUserById(req.user.id);
 
-        return HttpResponse.success(res, { user });
+        return HttpResponse.success(res, user);
     } catch (error) {
         return HttpResponse.handleError(res, error);
     }
@@ -74,7 +74,7 @@ exports.updateProfile = async (req, res) => {
     try {
         const user = await authService.updateProfile(req.user.id, req.body);
 
-        return HttpResponse.success(res, { user }, 'Profile updated successfully');
+        return HttpResponse.success(res, user, 'Profile updated successfully');
     } catch (error) {
         return HttpResponse.handleError(res, error);
     }

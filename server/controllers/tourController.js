@@ -8,10 +8,7 @@ exports.getTours = async (req, res) => {
     try {
         const tours = await tourService.getAllTours(req.query);
 
-        return HttpResponse.success(res, {
-            count: tours.length,
-            tours
-        });
+        return HttpResponse.success(res, tours);
     } catch (error) {
         return HttpResponse.handleError(res, error);
     }
@@ -28,7 +25,7 @@ exports.getTour = async (req, res) => {
             return HttpResponse.error(res, 'Tour not found', 404);
         }
 
-        return HttpResponse.success(res, { tour });
+        return HttpResponse.success(res, tour);
     } catch (error) {
         return HttpResponse.handleError(res, error);
     }

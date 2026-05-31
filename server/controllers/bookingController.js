@@ -11,10 +11,7 @@ exports.getAllBookings = async (req, res, next) => {
     try {
         const bookings = await bookingService.getAllBookings();
 
-        return HttpResponse.success(res, {
-            count: bookings.length,
-            bookings
-        });
+        return HttpResponse.success(res, bookings);
     } catch (error) {
         return HttpResponse.handleError(res, error);
     }
@@ -27,7 +24,7 @@ exports.createBooking = async (req, res) => {
     try {
         const booking = await bookingService.createBooking(req.body, req.user);
 
-        return HttpResponse.success(res, { booking }, 'Booking created successfully', 201);
+        return HttpResponse.success(res, booking, 'Booking created successfully', 201);
     } catch (error) {
         const statusCode = error.statusCode || 500;
         return HttpResponse.error(res, error.message, statusCode);
@@ -41,10 +38,7 @@ exports.getMyBookings = async (req, res) => {
     try {
         const bookings = await bookingService.getUserBookings(req.user);
 
-        return HttpResponse.success(res, {
-            count: bookings.length,
-            bookings
-        });
+        return HttpResponse.success(res, bookings);
     } catch (error) {
         return HttpResponse.handleError(res, error);
     }
@@ -57,7 +51,7 @@ exports.getBooking = async (req, res) => {
     try {
         const booking = await bookingService.getBookingById(req.params.id, req.user);
 
-        return HttpResponse.success(res, { booking });
+        return HttpResponse.success(res, booking);
     } catch (error) {
         return HttpResponse.handleError(res, error);
     }
