@@ -39,9 +39,18 @@ export class RegisterComponent {
 
         const formData = { ...this.registerForm.value };
 
-        // Convert languages string to array
-        if (formData.languages) {
-            formData.languages = formData.languages.split(',').map((lang: string) => lang.trim());
+        // Convert languages string to array and remove the field if it's empty
+        if (formData.languages && formData.languages.trim() !== '') {
+            formData.languages = formData.languages
+                .split(',')
+                .map((lang: string) => lang.trim())
+                .filter(Boolean);
+
+            if (formData.languages.length === 0) {
+                delete formData.languages;
+            }
+        } else {
+            delete formData.languages;
         }
 
         this.authService.register(formData).subscribe({
