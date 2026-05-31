@@ -39,8 +39,6 @@ const { protect, authorize } = require('../middleware/auth');
  *       201:
  *         description: Booking created
  *       400:
- *         description: Booking created
- *       400:
  *         description: Invalid input
  */
 router.get('/', protect, authorize('admin'), getAllBookings);
@@ -130,6 +128,6 @@ router.put('/:id', protect, authorize('guide', 'admin'), validate({ params: idPa
  *       200:
  *         description: Booking cancelled
  */
-router.delete('/:id', protect, authorize('tourist'), validate({ params: idParamDTO }), cancelBooking);
+router.delete('/:id', protect, authorize('tourist', 'admin'), validate({ params: idParamDTO }), cancelBooking);
 
 module.exports = router;

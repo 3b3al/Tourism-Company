@@ -12,7 +12,9 @@ const createBookingDTO = Joi.object({
 
 const updateBookingStatusDTO = Joi.object({
     status: Joi.string().valid('pending', 'confirmed', 'cancelled', 'completed').optional(),
-    paymentStatus: Joi.string().valid('pending', 'paid', 'failed').optional()
+    paymentStatus: Joi.string().valid('pending', 'paid', 'failed').optional(),
+    selectedDate: Joi.date().optional(),
+    guide: Joi.string().optional()
 }).min(1); // At least one field must be provided
 
 module.exports = {
