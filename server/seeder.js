@@ -21,6 +21,7 @@ const users = [
         email: 'guide@example.com',
         password: 'password123',
         role: 'guide',
+        phone: '0501111111',
         bio: 'Experienced guide with 10 years of experience.',
         rating: 4.8,
         reviewCount: 15
@@ -29,13 +30,15 @@ const users = [
         name: 'Jane Tourist',
         email: 'tourist@example.com',
         password: 'password123',
-        role: 'tourist'
+        role: 'tourist',
+        phone: '0509876543'
     },
     {
         name: 'Admin User',
         email: 'admin@example.com',
         password: 'password123',
-        role: 'admin'
+        role: 'admin',
+        phone: '0500000000'
     }
 ];
 
