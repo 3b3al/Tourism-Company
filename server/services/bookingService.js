@@ -1,6 +1,11 @@
 const Booking = require('../models/Booking');
 const Tour = require('../models/Tour');
 const AppError = require('../utils/AppError');
+const emailService = require('./emailService');
+
+const normalizeDateString = (date) => {
+    return new Date(date).toISOString().split('T')[0];
+};
 
 class BookingService {
     async createBooking(bookingData, user) {
@@ -23,7 +28,7 @@ class BookingService {
 
         // Check if selected date/time is available
         const availableSlot = tour.availableDates.find(
-            slot => new Date(slot.date).toDateString() === new Date(selectedDate).toDateString()
+            slot => normalizeDateString(slot.date) === normalizeDateString(selectedDate)
                 && slot.startTime === selectedTime
         );
 
@@ -62,6 +67,10 @@ class BookingService {
             .populate('tour', 'title duration price images')
             .populate('guide', 'name email phone')
             .populate('tourist', 'name email phone');
+
+        // Send confirmation emails (non-blocking — errors are caught inside emailService)
+        emailService.sendTouristBookingConfirmation(populatedBooking);
+        emailService.sendGuideBookingNotification(populatedBooking);
 
         return populatedBooking;
     }
@@ -107,7 +116,7 @@ class BookingService {
     }
 
     async updateBookingStatus(id, updateData, user) {
-        const { status, paymentStatus } = updateData;
+        const { status, paymentStatus, selectedDate, guide } = updateData;
 
         let booking = await Booking.findById(id);
 
@@ -125,6 +134,9 @@ class BookingService {
 
         if (status) booking.status = status;
         if (paymentStatus) booking.paymentStatus = paymentStatus;
+        // Admin-only: change booking date and/or reassign guide
+        if (selectedDate) booking.selectedDate = selectedDate;
+        if (guide) booking.guide = guide;
 
         await booking.save();
 
@@ -155,7 +167,7 @@ class BookingService {
         // Restore available spots
         const tour = await Tour.findById(booking.tour);
         const availableSlot = tour.availableDates.find(
-            slot => new Date(slot.date).toDateString() === new Date(booking.selectedDate).toDateString()
+            slot => normalizeDateString(slot.date) === normalizeDateString(booking.selectedDate)
                 && slot.startTime === booking.selectedTime
         );
 
