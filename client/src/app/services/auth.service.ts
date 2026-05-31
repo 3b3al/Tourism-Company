@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthResponse, LoginRequest, RegisterRequest, User } from '../models/auth.model';
 
 @Injectable({
@@ -20,7 +21,12 @@ export class AuthService {
     }
 
     register(data: RegisterRequest): Observable<AuthResponse> {
-        return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
+        return this.http.post<any>(`${this.apiUrl}/register`, data).pipe(
+            map(response => ({
+                success: response.success,
+                token: response.data.token,
+                user: response.data.user
+            })),
             tap(response => {
                 if (response.success) {
                     this.setToken(response.token);
@@ -31,7 +37,12 @@ export class AuthService {
     }
 
     login(data: LoginRequest): Observable<AuthResponse> {
-        return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data).pipe(
+        return this.http.post<any>(`${this.apiUrl}/login`, data).pipe(
+            map(response => ({
+                success: response.success,
+                token: response.data.token,
+                user: response.data.user
+            })),
             tap(response => {
                 if (response.success) {
                     this.setToken(response.token);
@@ -47,7 +58,12 @@ export class AuthService {
     }
 
     loadCurrentUser(): void {
-        this.http.get<{ success: boolean; user: User }>(`${this.apiUrl}/me`).subscribe({
+        this.http.get<any>(`${this.apiUrl}/me`).pipe(
+            map(response => ({
+                success: response.success,
+                user: response.data
+            }))
+        ).subscribe({
             next: (response) => {
                 if (response.success) {
                     this.currentUserSubject.next(response.user);
@@ -60,7 +76,11 @@ export class AuthService {
     }
 
     updateProfile(data: Partial<User>): Observable<{ success: boolean; user: User }> {
-        return this.http.put<{ success: boolean; user: User }>(`${this.apiUrl}/updateprofile`, data).pipe(
+        return this.http.put<any>(`${this.apiUrl}/updateprofile`, data).pipe(
+            map(response => ({
+                success: response.success,
+                user: response.data
+            })),
             tap(response => {
                 if (response.success) {
                     this.currentUserSubject.next(response.user);

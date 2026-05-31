@@ -25,19 +25,30 @@ export class TourService {
         }
 
         return this.http.get<any>(this.apiUrl, { params }).pipe(
-            map(response => response.data)
+            map(response => ({
+                success: response.success,
+                count: Array.isArray(response.data) ? response.data.length : response.data.count || 0,
+                tours: Array.isArray(response.data) ? response.data : response.data.tours || []
+            }))
         );
     }
 
     getTour(id: string): Observable<{ success: boolean; tour: Tour }> {
         return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-            map(response => response.data)
+            map(response => ({
+                success: response.success,
+                tour: response.data
+            }))
         );
     }
 
     getToursByGuide(guideId: string): Observable<{ success: boolean; count: number; tours: Tour[] }> {
         return this.http.get<any>(`${this.apiUrl}/guide/${guideId}`).pipe(
-            map(response => response.data)
+            map(response => ({
+                success: response.success,
+                count: response.data?.count ?? 0,
+                tours: response.data?.tours || []
+            }))
         );
     }
 
