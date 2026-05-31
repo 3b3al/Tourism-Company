@@ -1,45 +1,338 @@
+<!-- ── Page Header ────────────────────────────────────────────────────────── -->
 <div class="page-header">
-    <h1>Manage Bookings</h1>
+  <div class="page-header-left">
+    <h1 class="page-title">
+      <span class="title-icon">📋</span>
+      Manage Bookings
+    </h1>
+    <p class="page-subtitle">View and manage all customer bookings</p>
+  </div>
+  <div class="header-stats" *ngIf="!loading">
+    <div class="stat-pill">
+      <span class="stat-count">{{ bookings.length }}</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-pill pending">
+      <span class="stat-count">{{ countByStatus('pending') }}</span>
+      <span class="stat-label">Pending</span>
+    </div>
+    <div class="stat-pill confirmed">
+      <span class="stat-count">{{ countByStatus('confirmed') }}</span>
+      <span class="stat-label">Confirmed</span>
+    </div>
+  </div>
 </div>
 
-<div *ngIf="loading" class="loading">Loading bookings...</div>
-<div *ngIf="error" class="error">{{ error }}</div>
+<!-- ── Filters Bar ────────────────────────────────────────────────────────── -->
+<div class="filters-bar" *ngIf="!loading">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input
+      id="booking-search"
+      type="text"
+      [(ngModel)]="searchTerm"
+      placeholder="Search by tourist, tour, or guide..."
+      class="search-input"
+    />
+  </div>
+  <div class="filter-group">
+    <select id="booking-status-filter" [(ngModel)]="filterStatus" class="filter-select">
+      <option value="">All Statuses</option>
+      <option value="pending">Pending</option>
+      <option value="confirmed">Confirmed</option>
+      <option value="cancelled">Cancelled</option>
+      <option value="completed">Completed</option>
+    </select>
+  </div>
+  <button class="btn-refresh" (click)="loadBookings()" title="Refresh">
+    🔄 Refresh
+  </button>
+</div>
 
-<div class="table-container" *ngIf="!loading && !error">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Tour</th>
-                <th>Tourist</th>
-                <th>Guide</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let booking of bookings">
-                <td>{{ booking.selectedDate | date:'mediumDate' }}</td>
-                <td>{{ booking.tour?.title }}</td>
-                <td>{{ booking.tourist?.name }} <small>({{ booking.tourist?.email }})</small></td>
-                <td>{{ booking.guide?.name }}</td>
-                <td>{{ booking.totalPrice | currency }}</td>
-                <td>
-                    <span class="badge" [ngClass]="'status-' + booking.status">{{ booking.status }}</span>
-                </td>
-                <td>{{ booking.paymentStatus }}</td>
-                <td class="actions">
-                    <button *ngIf="booking.status === 'pending'" (click)="updateStatus(booking._id!, 'confirmed')"
-                        class="btn btn-sm btn-success">Confirm</button>
-                    <button *ngIf="booking.status !== 'cancelled' && booking.status !== 'completed'"
-                        (click)="updateStatus(booking._id!, 'cancelled')" class="btn btn-sm btn-danger">Cancel</button>
-                </td>
-            </tr>
-            <tr *ngIf="bookings.length === 0">
-                <td colspan="8" class="text-center">No bookings found.</td>
-            </tr>
-        </tbody>
-    </table>
+<!-- ── Loading ────────────────────────────────────────────────────────────── -->
+<div *ngIf="loading" class="loading-state">
+  <div class="spinner-ring"></div>
+  <p>Loading bookings...</p>
+</div>
+
+<!-- ── Error ──────────────────────────────────────────────────────────────── -->
+<div *ngIf="error" class="error-state">
+  <span class="error-icon">⚠️</span>
+  {{ error }}
+  <button (click)="loadBookings()" class="retry-btn">Retry</button>
+</div>
+
+<!-- ── Bookings Table ─────────────────────────────────────────────────────── -->
+<div class="table-wrapper" *ngIf="!loading && !error">
+  <table class="bookings-table">
+    <thead>
+      <tr>
+        <th>Tourist</th>
+        <th>Tour</th>
+        <th>Guide</th>
+        <th>Date</th>
+        <th>People</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Payment</th>
+        <th class="actions-col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let booking of filteredBookings; trackBy: trackByBookingId" class="booking-row">
+
+        <!-- Tourist -->
+        <td class="tourist-cell">
+          <div class="user-info">
+            <div class="user-avatar">{{ (booking.tourist?.name || '?')[0].toUpperCase() }}</div>
+            <div class="user-details">
+              <span class="user-name">{{ booking.tourist?.name || 'Unknown' }}</span>
+              <span class="user-email">{{ booking.tourist?.email }}</span>
+              <span class="user-phone" *ngIf="booking.contactPhone">📞 {{ booking.contactPhone }}</span>
+            </div>
+          </div>
+        </td>
+
+        <!-- Tour -->
+        <td class="tour-cell">
+          <span class="tour-title">{{ booking.tour?.title || '—' }}</span>
+        </td>
+
+        <!-- Guide -->
+        <td class="guide-cell">
+          <div class="guide-info">
+            <span class="guide-name">{{ booking.guide?.name || '—' }}</span>
+            <span class="guide-email" *ngIf="booking.guide?.email">{{ booking.guide?.email }}</span>
+          </div>
+        </td>
+
+        <!-- Date -->
+        <td class="date-cell">
+          <div class="date-info">
+            <span class="date-main">{{ booking.selectedDate | date:'MMM d, yyyy' }}</span>
+            <span class="date-time" *ngIf="booking.selectedTime">🕐 {{ booking.selectedTime }}</span>
+          </div>
+        </td>
+
+        <!-- People -->
+        <td class="people-cell">
+          <span class="people-count">👥 {{ booking.numberOfPeople }}</span>
+        </td>
+
+        <!-- Price -->
+        <td class="price-cell">
+          <span class="price-amount">{{ booking.totalPrice | currency }}</span>
+        </td>
+
+        <!-- Status -->
+        <td class="status-cell">
+          <span class="status-badge" [ngClass]="'status-' + booking.status">
+            {{ booking.status }}
+          </span>
+        </td>
+
+        <!-- Payment -->
+        <td class="payment-cell">
+          <span class="payment-badge" [ngClass]="'payment-' + booking.paymentStatus">
+            {{ booking.paymentStatus }}
+          </span>
+        </td>
+
+        <!-- Actions -->
+        <td class="actions-cell">
+          <div class="action-buttons">
+            <button
+              class="action-btn btn-view"
+              (click)="openDetail(booking)"
+              title="View Details"
+            >👁</button>
+            <button
+              class="action-btn btn-edit"
+              (click)="openEdit(booking)"
+              title="Edit Booking"
+              [disabled]="booking.status === 'cancelled' || booking.status === 'completed'"
+            >✏️</button>
+            <button
+              *ngIf="booking.status === 'pending'"
+              class="action-btn btn-confirm"
+              (click)="confirmBooking(booking._id!)"
+              title="Confirm Booking"
+            >✅</button>
+            <button
+              *ngIf="booking.status !== 'cancelled' && booking.status !== 'completed'"
+              class="action-btn btn-cancel"
+              (click)="cancelBooking(booking)"
+              title="Cancel Booking"
+            >🚫</button>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Empty State -->
+      <tr *ngIf="filteredBookings.length === 0">
+        <td colspan="9" class="empty-state">
+          <div class="empty-content">
+            <span class="empty-icon">📭</span>
+            <p>No bookings found</p>
+            <small *ngIf="searchTerm || filterStatus">Try adjusting your filters</small>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- Detail Modal                                                              -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+  <div class="modal-card detail-modal" (click)="$event.stopPropagation()" *ngIf="detailBooking">
+    <div class="modal-header">
+      <h2 class="modal-title">📋 Booking Details</h2>
+      <button class="modal-close" (click)="closeDetail()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="detail-grid">
+
+        <div class="detail-section">
+          <h3 class="section-label">👤 Tourist Info</h3>
+          <div class="detail-row">
+            <span class="detail-key">Name</span>
+            <span class="detail-val">{{ detailBooking.tourist?.name }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Email</span>
+            <span class="detail-val">{{ detailBooking.tourist?.email }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Contact Email</span>
+            <span class="detail-val">{{ detailBooking.contactEmail }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Phone</span>
+            <span class="detail-val">{{ detailBooking.contactPhone }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3 class="section-label">🗺️ Tour Info</h3>
+          <div class="detail-row">
+            <span class="detail-key">Tour</span>
+            <span class="detail-val">{{ detailBooking.tour?.title }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Date</span>
+            <span class="detail-val">{{ detailBooking.selectedDate | date:'fullDate' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Time</span>
+            <span class="detail-val">{{ detailBooking.selectedTime }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">People</span>
+            <span class="detail-val">{{ detailBooking.numberOfPeople }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Total Price</span>
+            <span class="detail-val price-highlight">{{ detailBooking.totalPrice | currency }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3 class="section-label">🧭 Guide Info</h3>
+          <div class="detail-row">
+            <span class="detail-key">Name</span>
+            <span class="detail-val">{{ detailBooking.guide?.name }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Email</span>
+            <span class="detail-val">{{ detailBooking.guide?.email }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3 class="section-label">📊 Booking Status</h3>
+          <div class="detail-row">
+            <span class="detail-key">Status</span>
+            <span class="status-badge" [ngClass]="'status-' + detailBooking.status">{{ detailBooking.status }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Payment</span>
+            <span class="payment-badge" [ngClass]="'payment-' + detailBooking.paymentStatus">{{ detailBooking.paymentStatus }}</span>
+          </div>
+          <div class="detail-row" *ngIf="detailBooking.specialRequests">
+            <span class="detail-key">Special Requests</span>
+            <span class="detail-val">{{ detailBooking.specialRequests }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-btn btn-secondary-modal" (click)="closeDetail()">Close</button>
+      <button
+        class="modal-btn btn-edit-modal"
+        (click)="closeDetail(); openEdit(detailBooking!)"
+        [disabled]="detailBooking.status === 'cancelled' || detailBooking.status === 'completed'"
+      >Edit Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- Edit Booking Modal                                                        -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEdit()">
+  <div class="modal-card edit-modal" (click)="$event.stopPropagation()" *ngIf="editingBooking">
+    <div class="modal-header">
+      <h2 class="modal-title">✏️ Edit Booking</h2>
+      <button class="modal-close" (click)="closeEdit()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="edit-context">
+        <div class="context-chip">
+          <span class="context-icon">🗺️</span>
+          <span>{{ editingBooking.tour?.title }}</span>
+        </div>
+        <div class="context-chip">
+          <span class="context-icon">👤</span>
+          <span>{{ editingBooking.tourist?.name }}</span>
+        </div>
+      </div>
+
+      <div class="edit-error" *ngIf="editError">⚠️ {{ editError }}</div>
+
+      <div class="form-field">
+        <label for="edit-date" class="field-label">📅 New Booking Date</label>
+        <input
+          id="edit-date"
+          type="date"
+          [(ngModel)]="editDate"
+          class="field-input"
+        />
+        <small class="field-hint">Admin can set any date — no availability restriction</small>
+      </div>
+
+      <div class="form-field">
+        <label for="edit-guide" class="field-label">🧭 Reassign Guide</label>
+        <select id="edit-guide" [(ngModel)]="editGuideId" class="field-select">
+          <option value="">— Keep current guide —</option>
+          <option *ngFor="let guide of guides" [value]="guide._id">
+            {{ guide.name }} ({{ guide.email }})
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-btn btn-secondary-modal" (click)="closeEdit()" [disabled]="editSaving">Cancel</button>
+      <button class="modal-btn btn-save-modal" (click)="saveEdit()" [disabled]="editSaving">
+        <span *ngIf="editSaving">⏳ Saving...</span>
+        <span *ngIf="!editSaving">💾 Save Changes</span>
+      </button>
+    </div>
+  </div>
 </div>
