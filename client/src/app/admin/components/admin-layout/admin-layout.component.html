@@ -16,7 +16,20 @@
     <main class="main-content">
         <header class="top-bar">
             <div class="user-info">
-                Admin
+                <div class="dropdown">
+                    <button class="dropdown-toggle" (click)="toggleDropdown()">
+                        Admin ▼
+                    </button>
+                    <div class="dropdown-menu" [class.show]="dropdownOpen">
+                        <a routerLink="/home" (click)="closeDropdown()" class="dropdown-item">
+                            🏠 Home
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-btn" (click)="logout()">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
         <div class="content-wrapper">

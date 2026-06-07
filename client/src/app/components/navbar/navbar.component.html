@@ -32,13 +32,16 @@
                     </button>
 
                     <div class="dropdown-menu" [class.show]="isMenuOpen">
-                        <a routerLink="/profile" class="dropdown-item" (click)="toggleMenu()">
+                        <a *ngIf="currentUser.role !== 'admin'" routerLink="/profile" class="dropdown-item" (click)="toggleMenu()">
                             <span>👤</span> Profile
                         </a>
-                        <a routerLink="/bookings" class="dropdown-item" (click)="toggleMenu()">
+                        <a *ngIf="currentUser.role === 'admin'" routerLink="/admin/dashboard" class="dropdown-item" (click)="toggleMenu()">
+                            <span>⚙️</span> Admin Panel
+                        </a>
+                        <a *ngIf="currentUser.role !== 'admin'" routerLink="/bookings" class="dropdown-item" (click)="toggleMenu()">
                             <span>📅</span> My Bookings
                         </a>
-                        <a *ngIf="authService.isGuide()" routerLink="/my-tours" class="dropdown-item"
+                        <a *ngIf="currentUser.role === 'guide'" routerLink="/my-tours" class="dropdown-item"
                             (click)="toggleMenu()">
                             <span>🗺️</span> My Tours
                         </a>

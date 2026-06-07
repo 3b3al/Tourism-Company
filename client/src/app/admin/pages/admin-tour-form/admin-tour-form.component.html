@@ -16,13 +16,21 @@
 
         <div class="form-group">
             <label>Description</label>
-            <textarea formControlName="description" class="form-control" rows="4"></textarea>
+            <textarea formControlName="description" class="form-control"
+                [class.is-invalid]="submitted && tourForm.get('description')?.invalid" rows="4"></textarea>
+            <div class="invalid-feedback" *ngIf="submitted && tourForm.get('description')?.errors?.['required']">
+                Description is required
+            </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col">
                 <label>Price</label>
-                <input type="number" formControlName="price" class="form-control">
+                <input type="number" formControlName="price" class="form-control"
+                    [class.is-invalid]="submitted && tourForm.get('price')?.invalid">
+                <div class="invalid-feedback" *ngIf="submitted && tourForm.get('price')?.errors?.['required']">
+                    Price is required
+                </div>
             </div>
             <div class="form-group col">
                 <label>Duration (hours)</label>
@@ -44,25 +52,37 @@
             </div>
             <div class="form-group col">
                 <label>Difficulty</label>
-                <select formControlName="difficulty" class="form-control">
+                <select formControlName="difficulty" class="form-control"
+                    [class.is-invalid]="submitted && tourForm.get('difficulty')?.invalid">
                     <option value="easy">Easy</option>
                     <option value="moderate">Moderate</option>
                     <option value="difficult">Difficult</option>
                 </select>
+                <div class="invalid-feedback" *ngIf="submitted && tourForm.get('difficulty')?.errors?.['required']">
+                    Difficulty is required
+                </div>
             </div>
         </div>
 
         <div class="form-group">
             <label>Max Group Size</label>
-            <input type="number" formControlName="maxGroupSize" class="form-control">
+            <input type="number" formControlName="maxGroupSize" class="form-control"
+                [class.is-invalid]="submitted && tourForm.get('maxGroupSize')?.invalid">
+            <div class="invalid-feedback" *ngIf="submitted && tourForm.get('maxGroupSize')?.errors?.['required']">
+                Max group size is required
+            </div>
         </div>
 
         <div class="form-group">
             <label>Guide</label>
-            <select formControlName="guide" class="form-control">
+            <select formControlName="guide" class="form-control"
+                [class.is-invalid]="submitted && tourForm.get('guide')?.invalid">
                 <option value="">Select a guide</option>
                 <option *ngFor="let guide of guides" [value]="guide._id">{{ guide.name }} ({{ guide.email }})</option>
             </select>
+            <div class="invalid-feedback" *ngIf="submitted && tourForm.get('guide')?.errors?.['required']">
+                Guide is required
+            </div>
         </div>
 
         <div class="form-group">

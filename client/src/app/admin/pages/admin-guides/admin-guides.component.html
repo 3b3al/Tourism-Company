@@ -1,5 +1,82 @@
 <div class="page-header">
-    <h1>Manage Guides & Users</h1>
+    <div class="page-header-content">
+        <h1>Manage Guides & Users</h1>
+        <button (click)="toggleAddForm()" class="btn btn-success add-guide-btn">
+            {{ showAddForm ? '✕ Close' : '+ Add Guide' }}
+        </button>
+    </div>
+</div>
+
+<!-- Add Guide Form Modal -->
+<div *ngIf="showAddForm" class="modal-overlay" (click)="toggleAddForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Add New Guide</h2>
+            <button class="close-btn" (click)="toggleAddForm()">✕</button>
+        </div>
+
+        <form class="guide-form" (ngSubmit)="addGuide()">
+            <div class="form-error" *ngIf="formError">
+                {{ formError }}
+            </div>
+            <div class="form-success" *ngIf="formSuccess">
+                {{ formSuccess }}
+            </div>
+
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" [(ngModel)]="guideForm.name" name="name" placeholder="John Doe" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" [(ngModel)]="guideForm.email" name="email" placeholder="guide@example.com" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Password *</label>
+                <input type="password" [(ngModel)]="guideForm.password" name="password" placeholder="Min 6 characters" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" [(ngModel)]="guideForm.phone" name="phone" placeholder="+1234567890" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Bio</label>
+                <textarea [(ngModel)]="guideForm.bio" name="bio" placeholder="Tell us about this guide..." rows="3" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Profile Picture</label>
+                <div class="avatar-upload">
+                    <div *ngIf="avatarPreview" class="avatar-preview">
+                        <img [src]="avatarPreview" alt="Preview">
+                        <button type="button" class="remove-avatar" (click)="guideForm.avatar = null; avatarPreview = null">Remove</button>
+                    </div>
+                    <div *ngIf="!avatarPreview" class="avatar-placeholder" (click)="fileInput.click()">
+                        <input #fileInput type="file" (change)="onAvatarSelected($event)" accept="image/*" class="file-input" name="avatar">
+                        <p>📸 Click to upload guide photo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Languages (comma-separated)</label>
+                <input type="text" [(ngModel)]="guideForm.languages" name="languages" placeholder="English, Spanish, French" class="form-control">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" [disabled]="formLoading">
+                    {{ formLoading ? 'Creating...' : 'Create Guide' }}
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="toggleAddForm()" [disabled]="formLoading">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div *ngIf="loading" class="loading">Loading users...</div>
@@ -20,7 +97,9 @@
             <tr *ngFor="let user of users">
                 <td>
                     <div class="user-cell">
-                        <img [src]="user.avatar || 'assets/default-avatar.png'" alt="Avatar" class="avatar-thumb">
+                        <img [src]="user.avatar && user.avatar !== 'default-avatar.png' ? environment.uploadsUrl + '/' + user.avatar : environment.uploadsUrl + '/' + 'test.png'" 
+                        alt="Avatar" 
+                        class="avatar-thumb">
                         {{ user.name }}
                     </div>
                 </td>

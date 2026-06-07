@@ -35,11 +35,21 @@ export class LoginComponent {
         this.authService.login(this.loginForm.value).subscribe({
             next: (response) => {
                 this.isLoading = false;
-                this.router.navigate(['/']);
+                if (response.user && response.user.role === 'admin') {
+                    this.router.navigate(['/admin/dashboard']);
+                } else {
+                    this.router.navigate(['/']);
+                }
             },
             error: (error) => {
                 this.isLoading = false;
-                this.errorMessage = error.error?.message || 'Login failed. Please try again.';
+                console.error('Login error details:', error);
+                
+                if (error.status === 0) {
+                    this.errorMessage = 'Network error: Cannot reach the server. Please check if the backend is running.';
+                } else {
+                    this.errorMessage = error.error?.message || 'Login failed. Please try again.';
+                }
             }
         });
     }

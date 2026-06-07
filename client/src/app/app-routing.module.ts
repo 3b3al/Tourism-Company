@@ -10,6 +10,8 @@ import { PaymentComponent } from './pages/payment/payment.component';
 import { InvoiceComponent } from './pages/invoice/invoice.component';
 import { BankInstructionsComponent } from './pages/payment/bank-instructions.component';
 
+import { adminGuard } from './guards/admin.guard';
+
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
@@ -21,7 +23,7 @@ const routes: Routes = [
     { path: 'payment/:id', component: PaymentComponent },
     { path: 'payment/success/:id', component: InvoiceComponent },
     { path: 'payment/bank-instructions/:id', component: BankInstructionsComponent },
-    { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
+    { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule), canActivate: [adminGuard] },
     { path: '**', redirectTo: '/home' }
 ];
 

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
     registerForm: FormGroup;
     errorMessage = '';
     isLoading = false;
@@ -16,6 +16,7 @@ export class RegisterComponent {
     constructor(
         private fb: FormBuilder,
         private authService: AuthService,
+        private route: ActivatedRoute,
         private router: Router
     ) {
         this.registerForm = this.fb.group({
@@ -27,6 +28,13 @@ export class RegisterComponent {
             bio: [''],
             languages: ['']
         });
+    }
+
+    ngOnInit(): void {
+        const role = this.route.snapshot.queryParamMap.get('role');
+        if (role === 'guide') {
+            this.registerForm.get('role')?.setValue('guide');
+        }
     }
 
     onSubmit(): void {
