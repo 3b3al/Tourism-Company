@@ -6,6 +6,7 @@ const HttpResponse = require('../utils/HttpResponse');
 // @access  Public
 exports.register = async (req, res) => {
     try {
+        const avatarPath = req.file ? req.file.path : null;
         const { user, token } = await authService.register(req.body);
 
         const data = {
