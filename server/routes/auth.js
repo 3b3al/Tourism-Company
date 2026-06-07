@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const validate = require('../middleware/validate');
+const { single } = require('../middleware/fileuploader');
 const { registerDTO, loginDTO, updateProfileDTO } = require('../dtos/auth.dto');
 const {
     register,
@@ -42,7 +43,7 @@ const { protect } = require('../middleware/auth');
  *       400:
  *         description: Invalid input
  */
-router.post('/register', validate({ body: registerDTO }), register);
+router.post('/register',single('avatar'), validate({ body: registerDTO }), register);
 
 /**
  * @swagger

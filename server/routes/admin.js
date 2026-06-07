@@ -16,8 +16,9 @@ router.use(authorize('admin'));
 
 router.get('/dashboard-stats', getDashboardStats);
 router.get('/users', getAllUsers);
+router.route('/users/:id/role')
+    .put(updateUserRole);
 router.route('/users/:id')
-    .put(updateUserRole)
     .delete(deleteUser);
 
 module.exports = router;

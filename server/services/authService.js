@@ -27,7 +27,8 @@ class AuthService {
             role: role || 'tourist',
             phone,
             bio,
-            languages
+            languages,
+            avatar: avatarPath || 'default-avatar.png'
         });
 
         const token = this.generateToken(user._id);
